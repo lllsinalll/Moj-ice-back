@@ -60,6 +60,7 @@ const upload = multer({
 // =========================
 
 const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 // =========================
 // MongoDB Connection
@@ -184,7 +185,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
     });
   }
 
-  const imageUrl = `https://moj-ice-back.onrender.com/uploads/${req.file.filename}`;
+  const imageUrl = `${BASE_URL}/uploads/${req.file.filename}`;
 
   res.json({
     imageUrl,
