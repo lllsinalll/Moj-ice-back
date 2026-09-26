@@ -184,7 +184,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
     });
   }
 
-  const imageUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+  const imageUrl = `https://moj-ice-back.onrender.com/uploads/${req.file.filename}`;
 
   res.json({
     imageUrl,
