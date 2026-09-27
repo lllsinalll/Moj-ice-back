@@ -3,7 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("./config/cloudinary");
 const cors = require("cors");
 
 const Product = require("./models/Product");
@@ -24,18 +25,21 @@ app.use("/uploads", express.static("uploads"));
 // Multer - Image Upload
 // =========================
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
 
-  filename: (req, file, cb) => {
-    const extension = path.extname(file.originalname);
+  params: {
+    folder: "moj-ice",
 
-    const uniqueName =
-      Date.now() + "-" + Math.random().toString(36).slice(2) + extension;
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
 
-    cb(null, uniqueName);
+    transformation: [
+      {
+        width: 800,
+        height: 800,
+        crop: "limit",
+      },
+    ],
   },
 });
 
@@ -185,7 +189,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
     });
   }
 
-  const imageUrl = `${BASE_URL}/uploads/${req.file.filename}`;
+  const imageUrl = req.file.path;
 
   res.json({
     imageUrl,
